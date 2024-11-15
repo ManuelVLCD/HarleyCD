@@ -1,0 +1,158 @@
+/* -- Crear la base de datos si no existe
+CREATE DATABASE IF NOT EXISTS libreria_ventas;
+
+-- Seleccionar la base de datos
+USE libreria_ventas;
+
+-- Crear la tabla de dimensión tiempo
+CREATE TABLE IF NOT EXISTS dim_tiempo (
+    id_tiempo INT PRIMARY KEY,
+    año INT,
+    mes INT,
+    dia INT,
+    trimestre INT
+);
+
+-- Crear la tabla de dimensión libro
+CREATE TABLE IF NOT EXISTS dim_libro (
+    id_libro INT PRIMARY KEY,
+    titulo VARCHAR(255),
+    autor VARCHAR(255),
+    genero VARCHAR(100),
+    precio_unitario DECIMAL(10, 2)
+);
+
+-- Crear la tabla de dimensión cliente
+CREATE TABLE IF NOT EXISTS dim_cliente (
+    id_cliente INT PRIMARY KEY,
+    nombre_cliente VARCHAR(255),
+    edad INT,
+    genero VARCHAR(10),
+    ciudad VARCHAR(100)
+);
+
+-- Crear la tabla de dimensión tienda
+CREATE TABLE IF NOT EXISTS dim_tienda (
+    id_tienda INT PRIMARY KEY,
+    nombre_tienda VARCHAR(255),
+    ciudad VARCHAR(100),
+    pais VARCHAR(100)
+);
+
+-- Crear la tabla de hechos
+CREATE TABLE IF NOT EXISTS hechos_ventas_libros (
+    id_venta INT PRIMARY KEY,
+    id_tiempo INT,
+    id_libro INT,
+    id_cliente INT,
+    id_tienda INT,
+    cantidad INT,
+    precio_total DECIMAL(10, 2),
+    FOREIGN KEY (id_tiempo) REFERENCES dim_tiempo(id_tiempo),
+    FOREIGN KEY (id_libro) REFERENCES dim_libro(id_libro),
+    FOREIGN KEY (id_cliente) REFERENCES dim_cliente(id_cliente),
+    FOREIGN KEY (id_tienda) REFERENCES dim_tienda(id_tienda)
+);
+*/
+/*
+
+-- Insertar datos en dim_tiempo
+INSERT INTO dim_tiempo (id_tiempo, año, mes, dia, trimestre) VALUES
+(1, 2024, 11, 15, 4),
+(2, 2024, 10, 10, 4),
+(3, 2024, 9, 5, 3);
+
+-- Insertar datos en dim_libro
+INSERT INTO dim_libro (id_libro, titulo, autor, genero, precio_unitario) VALUES
+(1, 'Libro A', 'Autor A', 'Ficción', 15.99),
+(2, 'Libro B', 'Autor B', 'No Ficción', 20.00),
+(3, 'Libro C', 'Autor C', 'Fantasía', 12.50),
+(4, 'Libro D', 'Autor D', 'Ciencia', 18.75),
+(5, 'Libro E', 'Autor E', 'Historia', 22.00);
+
+-- Insertar datos en dim_cliente
+INSERT INTO dim_cliente (id_cliente, nombre_cliente, edad, genero, ciudad) VALUES
+(1, 'Cliente A', 30, 'M', 'Ciudad A'),
+(2, 'Cliente B', 25, 'F', 'Ciudad B'),
+(3, 'Cliente C', 35, 'M', 'Ciudad C'),
+(4, 'Cliente D', 28, 'F', 'Ciudad D'),
+(5, 'Cliente E', 40, 'M', 'Ciudad E');
+
+-- Insertar datos en dim_tienda
+INSERT INTO dim_tienda (id_tienda, nombre_tienda, ciudad, pais) VALUES
+(1, 'Tienda A', 'Ciudad A', 'País A'),
+(2, 'Tienda B', 'Ciudad B', 'País B'),
+(3, 'Tienda C', 'Ciudad C', 'País C');
+
+-- Insertar datos en hechos_ventas_libros
+INSERT INTO hechos_ventas_libros (id_venta, id_tiempo, id_libro, id_cliente, id_tienda, cantidad, precio_total) VALUES
+(1, 1, 1, 1, 1, 2, 31.98),
+(2, 1, 2, 2, 2, 1, 20.00),
+(3, 2, 3, 3, 3, 3, 37.50),
+(4, 2, 4, 4, 1, 1, 18.75),
+(5, 3, 5, 5, 2, 2, 44.00),
+(6, 3, 1, 1, 3, 1, 15.99),
+(7, 1, 2, 2, 1, 2, 40.00),
+(8, 2, 3, 3, 2, 1, 12.50),
+(9, 3, 4, 4, 3, 2, 37.50),
+(10, 1, 5, 5, 1, 1, 22.00);
+*/
+/*
+-- Consulta 1: Total de ventas (precio_total) por género de libro y mes
+SELECT l.genero, t.mes, SUM(h.precio_total) AS total_ventas
+FROM hechos_ventas_libros h
+JOIN dim_libro l ON h.id_libro = l.id_libro
+JOIN dim_tiempo t ON h.id_tiempo = t.id_tiempo
+GROUP BY l.genero, t.mes;
+
+-- Consulta 2: Cantidad total de libros vendidos por tienda y autor
+SELECT ti.nombre_tienda, l.autor, SUM(h.cantidad) AS total_libros_vendidos
+FROM hechos_ventas_libros h
+JOIN dim_libro l ON h.id_libro = l.id_libro
+JOIN dim_tienda ti ON h.id_tienda = ti.id_tienda
+GROUP BY ti.nombre_tienda, l.autor;
+
+-- Consulta 3: Ingresos totales por ciudad de cliente y trimestre
+SELECT c.ciudad, t.trimestre, SUM(h.precio_total) AS ingresos_totales
+FROM hechos_ventas_libros h
+JOIN dim_cliente c ON h.id_cliente = c.id_cliente
+JOIN dim_tiempo t ON h.id_tiempo = t.id_tiempo
+GROUP BY c.ciudad, t.trimestre;
+
+-- Consulta 4: Total de ventas de cada cliente (precio_total acumulado) y número de libros comprados
+SELECT c.nombre_cliente, SUM(h.precio_total) AS total_ventas, SUM(h.cantidad) AS total_libros_comprados
+FROM hechos_ventas_libros h
+JOIN dim_cliente c ON h.id_cliente = c.id_cliente
+GROUP BY c.nombre_cliente;
+*/
+/*
+SELECT 
+    h.id_venta,
+    t.año,
+    t.mes,
+    t.dia,
+    t.trimestre,
+    l.titulo,
+    l.autor,
+    l.genero,
+    l.precio_unitario,
+    c.nombre_cliente,
+    c.edad,
+    c.genero AS genero_cliente,
+    c.ciudad AS ciudad_cliente,
+    ti.nombre_tienda,
+    ti.ciudad AS ciudad_tienda,
+    ti.pais,
+    h.cantidad,
+    h.precio_total
+FROM 
+    hechos_ventas_libros h
+JOIN 
+    dim_tiempo t ON h.id_tiempo = t.id_tiempo
+JOIN 
+    dim_libro l ON h.id_libro = l.id_libro
+JOIN 
+    dim_cliente c ON h.id_cliente = c.id_cliente
+JOIN 
+    dim_tienda ti ON h.id_tienda = ti.id_tienda;
+*/
