@@ -1,4 +1,4 @@
-/* -- Crear la base de datos si no existe
+ -- Crear la base de datos si no existe
 CREATE DATABASE IF NOT EXISTS libreria_ventas;
 
 -- Seleccionar la base de datos
@@ -53,8 +53,8 @@ CREATE TABLE IF NOT EXISTS hechos_ventas_libros (
     FOREIGN KEY (id_cliente) REFERENCES dim_cliente(id_cliente),
     FOREIGN KEY (id_tienda) REFERENCES dim_tienda(id_tienda)
 );
-*/
-/*
+
+
 
 -- Insertar datos en dim_tiempo
 INSERT INTO dim_tiempo (id_tiempo, año, mes, dia, trimestre) VALUES
@@ -96,8 +96,8 @@ INSERT INTO hechos_ventas_libros (id_venta, id_tiempo, id_libro, id_cliente, id_
 (8, 2, 3, 3, 2, 1, 12.50),
 (9, 3, 4, 4, 3, 2, 37.50),
 (10, 1, 5, 5, 1, 1, 22.00);
-*/
-/*
+
+
 -- Consulta 1: Total de ventas (precio_total) por género de libro y mes
 SELECT l.genero, t.mes, SUM(h.precio_total) AS total_ventas
 FROM hechos_ventas_libros h
@@ -124,8 +124,7 @@ SELECT c.nombre_cliente, SUM(h.precio_total) AS total_ventas, SUM(h.cantidad) AS
 FROM hechos_ventas_libros h
 JOIN dim_cliente c ON h.id_cliente = c.id_cliente
 GROUP BY c.nombre_cliente;
-*/
-/*
+
 SELECT 
     h.id_venta,
     t.año,
@@ -155,4 +154,4 @@ JOIN
     dim_cliente c ON h.id_cliente = c.id_cliente
 JOIN 
     dim_tienda ti ON h.id_tienda = ti.id_tienda;
-*/
+
